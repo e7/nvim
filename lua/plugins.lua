@@ -11,6 +11,7 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+-- lazy.nvim管理其它插件
 require("lazy").setup({
     -- file explorer
     {
@@ -25,4 +26,25 @@ require("lazy").setup({
         end,
     },
     {"nvim-treesitter/nvim-treesitter", build = ":TSUpdate"},
+
+    -- telescope
+    {
+        'nvim-telescope/telescope.nvim',
+        dependencies = { 'nvim-lua/plenary.nvim' },
+        cmd = 'Telescope',  -- 只有在执行 :Telescope 命令时加载
+        config = function()
+          require('telescope').setup{
+            defaults = {
+              file_ignore_patterns = {"node_modules", ".git"},
+            },
+          }
+        end
+    },
+    {
+        'nvim-telescope/telescope-fzf-native.nvim',
+        run = 'make', -- 如果没有编译，可以到插件扩展目录手动make
+        config = function()
+          require('telescope').load_extension('fzf')
+        end
+    },
 })

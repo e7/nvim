@@ -1,3 +1,6 @@
+-- Don't show the mode, since it's already in the status line
+vim.opt.showmode = false
+
 -- Hint: use `:h <option>` to figure out the meaning if needed
 vim.opt.clipboard = 'unnamedplus' -- use system clipboard
 vim.opt.completeopt = { 'menu', 'menuone', 'noselect' }
@@ -20,6 +23,12 @@ vim.opt.showmode = false -- we are experienced, wo don't need the "-- INSERT --"
 
 -- Searching
 vim.opt.incsearch = true -- search as characters are entered
-vim.opt.hlsearch = false -- do not highlight matches
+vim.opt.hlsearch = true -- highlight matches
 vim.opt.ignorecase = true -- ignore case in searches by default
 vim.opt.smartcase = true -- but make it case sensitive if an uppercase is entered
+
+-- Sets how neovim will display certain whitespace characters in the editor.
+--  See `:help 'list'`
+--  and `:help 'listchars'`
+vim.opt.list = true
+vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
