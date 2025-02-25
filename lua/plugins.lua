@@ -47,4 +47,92 @@ require("lazy").setup({
           require('telescope').load_extension('fzf')
         end
     },
+
+    -- LSP
+    {
+        'neovim/nvim-lspconfig',
+        event = { 'BufReadPost', 'BufNewFile' },
+        cmd = { 'LspInfo', 'LspInstall', 'LspUninstall' },
+        dependencies = {
+            {'rmagatti/goto-preview', event = 'VeryLazy' },
+        },
+        config = function()
+            -- lua配置
+            require("lspconfig").lua_ls.setup({})
+            -- pyright配置
+            require('lspconfig').pyright.setup{}
+
+            -- gopls配置
+            require("lspconfig").gopls.setup({
+                settings = {
+                    ui = {
+                        completion = {
+                            usePlaceholders = true,
+                        },
+                    },
+                    gopls = {
+                        analyses = {
+                            unusedparams = true,
+                        },
+                    -- 启用静态检查
+                    staticcheck = true,
+                  },
+                },
+            })
+
+        end
+    },
+    {
+        "hrsh7th/nvim-cmp",
+        config = function()
+            local cmp = require('cmp')
+
+          -- 设置 nvim-cmp 补全行为
+          cmp.setup({
+            snippet = {
+              expand = function(args)
+                vim.fn["vsnip#anonymous"](args.body)
+              end,
+            },
+            mapping = {
+                ['<Down>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
+                ['<Up>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
+                ['<Tab>'] = cmp.mapping.confirm({ select = true }),
+            },
+            sources = {
+              { name = 'nvim_lsp' },
+              { name = 'buffer' },
+              { name = 'path' },
+            },
+          })
+        end,
+        event = { "InsertEnter", "CmdlineEnter" },
+        dependencies = {
+            "cmp-nvim-lsp",
+            "cmp_luasnip",
+            "cmp-buffer",
+            "cmp-path",
+            "cmp-cmdline",
+        },
+    },
+    { "hrsh7th/cmp-nvim-lsp", lazy = true },
+    { "saadparwaiz1/cmp_luasnip", lazy = true },
+    { "hrsh7th/cmp-buffer", lazy = true },
+    { "hrsh7th/cmp-path", lazy = true },
+    { "hrsh7th/cmp-cmdline",lazy = true },
+    {
+        -- mason不是必须的，但它能帮你更好的安装和管理LSP服务器
+        'williamboman/mason.nvim',
+        opts = {
+            pip = {
+                upgrade_pip = false,
+                install_args = pip_args,
+            },
+            ui = {
+                border = 'single',
+                width = 0.7,
+                height = 0.7,
+            },
+        }
+    },
 })
